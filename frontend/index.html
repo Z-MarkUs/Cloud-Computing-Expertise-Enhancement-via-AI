@@ -1,0 +1,221 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cloud Computing Chatbot</title>
+    <style>
+        /* General Styles */
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            background: linear-gradient(to bottom, #e0f7fa, #ffffff);
+        }
+
+        .container {
+            width: 90%;
+            max-width: 600px;
+            height: 90%;
+            background: #ffffff;
+            border-radius: 15px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+        }
+
+        /* Header */
+        .header {
+            background: #007BFF;
+            color: white;
+            padding: 15px;
+            text-align: center;
+            font-size: 18px;
+            font-weight: bold;
+        }
+
+        .subtitle {
+            font-size: 14px;
+            font-weight: normal;
+        }
+
+        /* Chat History */
+        #chat-box {
+            flex-grow: 1;
+            overflow-y: auto;
+            padding: 15px;
+            background: url('https://www.transparenttextures.com/patterns/cloudy.png');
+            background-color: #f4f6f8;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .message {
+            padding: 10px 15px;
+            border-radius: 15px;
+            max-width: 70%;
+            word-wrap: break-word;
+            word-break: break-word;
+        }
+
+        .user-message {
+            background: #007BFF;
+            color: white;
+            align-self: flex-end;
+            text-align: right;
+        }
+
+        .bot-message {
+            background: #e9ecef;
+            color: #333;
+            align-self: flex-start;
+            text-align: left;
+        }
+
+        /* Input Area */
+        .input-area {
+            display: flex;
+            border-top: 1px solid #ddd;
+            padding: 10px;
+            background: #f8f9fa;
+        }
+
+        #prompt {
+            flex-grow: 1;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            padding: 10px;
+            font-size: 16px;
+        }
+
+        #send-btn {
+            margin-left: 10px;
+            padding: 10px 20px;
+            font-size: 16px;
+            border: none;
+            background-color: #007BFF;
+            color: white;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
+        #send-btn:hover {
+            background-color: #0056b3;
+        }
+
+        /* Scrollbar Styling */
+        #chat-box::-webkit-scrollbar {
+            width: 8px;
+        }
+
+        #chat-box::-webkit-scrollbar-thumb {
+            background: #bbb;
+            border-radius: 4px;
+        }
+
+        #chat-box::-webkit-scrollbar-track {
+            background: #f4f6f8;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- Header -->
+        <div class="header">
+            Cloud Computing Chatbot
+            <div class="subtitle">University of Toronto, MEng ECE</div>
+        </div>
+
+        <!-- Chat History -->
+        <div id="chat-box">
+            <!-- Chat messages will be dynamically appended here -->
+        </div>
+
+        <!-- Input Area -->
+        <div class="input-area">
+            <input type="text" id="prompt" placeholder="Type your message..." />
+            <button id="send-btn">Send</button>
+        </div>
+    </div>
+
+    <script>
+        const chatBox = document.getElementById("chat-box");
+        const promptInput = document.getElementById("prompt");
+        const sendButton = document.getElementById("send-btn");
+    
+        // Function to send a message
+        const sendMessage = async () => {
+            const prompt = promptInput.value.trim();
+            if (!prompt) {
+                alert("Please enter a message.");
+                return;
+            }
+    
+            // Clear input field immediately
+            promptInput.value = "";
+    
+            // Display user input in the chat box
+            const userMessage = document.createElement("div");
+            userMessage.className = "message user-message";
+            userMessage.textContent = prompt;
+            chatBox.appendChild(userMessage);
+    
+            // Scroll to the bottom
+            chatBox.scrollTop = chatBox.scrollHeight;
+    
+            // Send user input to the backend API
+            try {
+                const response = await fetch("http://127.0.0.1:5000/api/ask", {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json",
+                    },
+                    body: JSON.stringify({ prompt }),
+                });
+    
+                if (response.ok) {
+                    const data = await response.json();
+    
+                    // Check if the response has the "response" key
+                    if (data.response) {
+                        const botMessage = document.createElement("div");
+                        botMessage.className = "message bot-message";
+                        botMessage.textContent = data.response;
+                        chatBox.appendChild(botMessage);
+                    } else {
+                        throw new Error("Invalid response format from server.");
+                    }
+                } else {
+                    throw new Error(`Server error: ${response.statusText}`);
+                }
+            } catch (error) {
+                const errorMessage = document.createElement("div");
+                errorMessage.className = "message bot-message";
+                errorMessage.textContent = `Error: ${error.message}`;
+                chatBox.appendChild(errorMessage);
+            }
+    
+            // Scroll to the bottom
+            chatBox.scrollTop = chatBox.scrollHeight;
+        };
+    
+        // Send button click event
+        sendButton.addEventListener("click", sendMessage);
+    
+        // Handle Enter key press
+        promptInput.addEventListener("keydown", (event) => {
+            if (event.key === "Enter") {
+                event.preventDefault(); // Prevent newline in input
+                sendMessage();
+            }
+        });
+    </script>
+    
+</body>
+</html>
