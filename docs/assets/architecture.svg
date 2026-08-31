@@ -1,0 +1,130 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1400" height="780" viewBox="0 0 1400 780" role="img" aria-labelledby="title desc">
+  <title id="title">StratusGuide system architecture</title>
+  <desc id="desc">A React client calls a FastAPI boundary and RAG orchestrator. A shared provider contract selects either the deterministic local demo or an opt-in Azure adapter. Both return citations and an inspectable trace.</desc>
+  <defs>
+    <linearGradient id="background" x1="0" y1="0" x2="1400" y2="780" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#07111F"/>
+      <stop offset="1" stop-color="#0B1D2E"/>
+    </linearGradient>
+    <linearGradient id="mint" x1="0" y1="0" x2="1" y2="1">
+      <stop stop-color="#7DE3D2"/>
+      <stop offset="1" stop-color="#4DAFBE"/>
+    </linearGradient>
+    <linearGradient id="azure" x1="0" y1="0" x2="1" y2="1">
+      <stop stop-color="#75B4FF"/>
+      <stop offset="1" stop-color="#3E75D6"/>
+    </linearGradient>
+    <pattern id="grid" width="40" height="40" patternUnits="userSpaceOnUse">
+      <path d="M40 0H0V40" fill="none" stroke="#9FC5DE" stroke-opacity=".04"/>
+    </pattern>
+    <marker id="arrow-mint" markerWidth="9" markerHeight="9" refX="8" refY="4.5" orient="auto">
+      <path d="M0 0L9 4.5 0 9Z" fill="#6CCFC3"/>
+    </marker>
+    <marker id="arrow-blue" markerWidth="9" markerHeight="9" refX="8" refY="4.5" orient="auto">
+      <path d="M0 0L9 4.5 0 9Z" fill="#68A9F5"/>
+    </marker>
+    <filter id="shadow" x="-20%" y="-20%" width="140%" height="140%">
+      <feDropShadow dx="0" dy="8" stdDeviation="14" flood-color="#000814" flood-opacity=".36"/>
+    </filter>
+  </defs>
+
+  <rect width="1400" height="780" rx="28" fill="url(#background)"/>
+  <rect width="1400" height="780" rx="28" fill="url(#grid)"/>
+
+  <g font-family="Inter,Segoe UI,sans-serif">
+    <text x="64" y="70" fill="#E3F1FB" font-size="30" font-weight="700">One contract. Two evidence providers.</text>
+    <text x="64" y="102" fill="#7791A8" font-size="15">Credential-free demo by default · Azure integration only when explicitly configured</text>
+
+    <g filter="url(#shadow)">
+      <rect x="64" y="154" width="230" height="132" rx="18" fill="#0D2032" stroke="#91B8D0" stroke-opacity=".18"/>
+      <rect x="82" y="174" width="44" height="44" rx="13" fill="#133646"/>
+      <path d="M93 205h24a7 7 0 0 0 .7-14 11 11 0 0 0-21-1.6A6 6 0 0 0 93 205Z" fill="none" stroke="#7DE3D2" stroke-width="2"/>
+      <text x="82" y="244" fill="#E2EFF8" font-size="18" font-weight="650">React experience</text>
+      <text x="82" y="266" fill="#7791A8" font-size="12">Chat · citations · live trace</text>
+    </g>
+
+    <path d="M294 220H350" stroke="#6CCFC3" stroke-width="2" marker-end="url(#arrow-mint)"/>
+    <text x="310" y="207" fill="#5D7A8F" font-size="10" font-family="ui-monospace,Consolas,monospace">JSON</text>
+
+    <g filter="url(#shadow)">
+      <rect x="358" y="142" width="330" height="156" rx="18" fill="#0D2032" stroke="#91B8D0" stroke-opacity=".18"/>
+      <text x="382" y="176" fill="#6CCFC3" font-size="10" letter-spacing="1.5" font-family="ui-monospace,Consolas,monospace">HTTP BOUNDARY</text>
+      <text x="382" y="211" fill="#E2EFF8" font-size="21" font-weight="650">FastAPI + typed contracts</text>
+      <text x="382" y="239" fill="#8299AC" font-size="12">validation · request IDs · safe errors · API key</text>
+      <text x="382" y="263" fill="#8299AC" font-size="12">CORS · security headers · health · Prometheus</text>
+    </g>
+
+    <path d="M688 220H748" stroke="#6CCFC3" stroke-width="2" marker-end="url(#arrow-mint)"/>
+
+    <g filter="url(#shadow)">
+      <rect x="756" y="142" width="310" height="156" rx="18" fill="#0D2032" stroke="#91B8D0" stroke-opacity=".18"/>
+      <text x="780" y="176" fill="#6CCFC3" font-size="10" letter-spacing="1.5" font-family="ui-monospace,Consolas,monospace">RAG ORCHESTRATOR</text>
+      <text x="780" y="211" fill="#E2EFF8" font-size="21" font-weight="650">Plan → retrieve → rank → cite</text>
+      <text x="780" y="239" fill="#8299AC" font-size="12">conversation-aware query · strength gate</text>
+      <text x="780" y="263" fill="#8299AC" font-size="12">marker validation · safe abstention · timing trace</text>
+    </g>
+
+    <path d="M1066 220H1126" stroke="#6CCFC3" stroke-width="2" marker-end="url(#arrow-mint)"/>
+
+    <g filter="url(#shadow)">
+      <rect x="1134" y="154" width="202" height="132" rx="18" fill="#0D2032" stroke="#91B8D0" stroke-opacity=".18"/>
+      <text x="1158" y="189" fill="#6CCFC3" font-size="10" letter-spacing="1.3" font-family="ui-monospace,Consolas,monospace">RESPONSE</text>
+      <text x="1158" y="222" fill="#E2EFF8" font-size="18" font-weight="650">Answer + evidence</text>
+      <text x="1158" y="248" fill="#8299AC" font-size="12">citations · ranked docs</text>
+      <text x="1158" y="269" fill="#8299AC" font-size="12">strategy · latency · strength</text>
+    </g>
+
+    <path d="M911 298V351" stroke="#91B8D0" stroke-opacity=".45" stroke-width="2"/>
+    <rect x="768" y="331" width="286" height="42" rx="21" fill="#112A3B" stroke="#91B8D0" stroke-opacity=".18"/>
+    <text x="806" y="357" fill="#A8BDCC" font-size="12" font-family="ui-monospace,Consolas,monospace">Retriever + generator protocols</text>
+
+    <path d="M852 373V417H486V449" stroke="#6CCFC3" stroke-width="2" fill="none" marker-end="url(#arrow-mint)"/>
+    <path d="M970 373V417H1118V449" stroke="#68A9F5" stroke-width="2" fill="none" marker-end="url(#arrow-blue)"/>
+
+    <g filter="url(#shadow)">
+      <rect x="118" y="458" width="650" height="238" rx="22" fill="#0B202B" stroke="#7DE3D2" stroke-opacity=".28"/>
+      <rect x="140" y="480" width="128" height="29" rx="14.5" fill="#123942"/>
+      <circle cx="158" cy="494.5" r="4" fill="#7DE3D2"/>
+      <text x="171" y="499" fill="#B8DCD8" font-size="10" font-family="ui-monospace,Consolas,monospace">DEFAULT · DEMO</text>
+      <text x="140" y="548" fill="#E2EFF8" font-size="22" font-weight="650">Deterministic local evidence path</text>
+
+      <rect x="140" y="575" width="176" height="78" rx="13" fill="#0E2A34" stroke="#7DE3D2" stroke-opacity=".16"/>
+      <text x="157" y="606" fill="#DDEDF2" font-size="14" font-weight="600">BM25 + concepts</text>
+      <text x="157" y="629" fill="#7695A1" font-size="11">lexical ranking</text>
+
+      <path d="M316 614H357" stroke="#6CCFC3" stroke-width="1.8" marker-end="url(#arrow-mint)"/>
+      <rect x="365" y="575" width="176" height="78" rx="13" fill="#0E2A34" stroke="#7DE3D2" stroke-opacity=".16"/>
+      <text x="382" y="606" fill="#DDEDF2" font-size="14" font-weight="600">25 source records</text>
+      <text x="382" y="629" fill="#7695A1" font-size="11">versioned JSON corpus</text>
+
+      <path d="M541 614H582" stroke="#6CCFC3" stroke-width="1.8" marker-end="url(#arrow-mint)"/>
+      <rect x="590" y="575" width="154" height="78" rx="13" fill="#0E2A34" stroke="#7DE3D2" stroke-opacity=".16"/>
+      <text x="607" y="606" fill="#DDEDF2" font-size="14" font-weight="600">Extract + cite</text>
+      <text x="607" y="629" fill="#7695A1" font-size="11">reproducible output</text>
+    </g>
+
+    <g filter="url(#shadow)">
+      <rect x="798" y="458" width="538" height="238" rx="22" fill="#0B1C32" stroke="#69A9F4" stroke-opacity=".30"/>
+      <rect x="820" y="480" width="151" height="29" rx="14.5" fill="#112E4A"/>
+      <circle cx="838" cy="494.5" r="4" fill="#75B4FF"/>
+      <text x="851" y="499" fill="#B7D3F4" font-size="10" font-family="ui-monospace,Consolas,monospace">OPT-IN · AZURE</text>
+      <text x="820" y="548" fill="#E2EFF8" font-size="22" font-weight="650">Managed-service adapter</text>
+
+      <rect x="820" y="575" width="212" height="78" rx="13" fill="#102641" stroke="#75B4FF" stroke-opacity=".16"/>
+      <text x="839" y="606" fill="#DDEAF8" font-size="14" font-weight="600">Azure AI Search</text>
+      <text x="839" y="629" fill="#7897BA" font-size="11">hybrid + semantic ranking</text>
+
+      <path d="M1032 614H1073" stroke="#68A9F5" stroke-width="1.8" marker-end="url(#arrow-blue)"/>
+      <rect x="1081" y="575" width="231" height="78" rx="13" fill="#102641" stroke="#75B4FF" stroke-opacity=".16"/>
+      <text x="1100" y="606" fill="#DDEAF8" font-size="14" font-weight="600">Azure OpenAI</text>
+      <text x="1100" y="629" fill="#7897BA" font-size="11">grounded generation · Entra ID</text>
+    </g>
+
+    <g transform="translate(64 728)" font-family="ui-monospace,Consolas,monospace" font-size="10">
+      <text fill="#628097">PACKAGING</text>
+      <text x="82" fill="#9BB0C0">non-root OCI image · hardened Compose · Azure Container Apps Bicep</text>
+      <text x="746" fill="#628097">VERIFICATION</text>
+      <text x="834" fill="#9BB0C0">tests · RAG benchmark · CI · CodeQL · SBOM/provenance</text>
+    </g>
+  </g>
+</svg>
