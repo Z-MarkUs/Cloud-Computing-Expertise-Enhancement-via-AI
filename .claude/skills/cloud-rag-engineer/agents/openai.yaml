@@ -1,0 +1,4 @@
+interface:
+  display_name: "Cloud RAG Engineer"
+  short_description: "Engineer and verify the cloud RAG tutor"
+  default_prompt: "Use $cloud-rag-engineer to improve this cloud RAG tutor and verify the result."
