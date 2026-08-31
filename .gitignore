@@ -1,0 +1,57 @@
+# Secrets and local configuration
+.env
+.env.*
+!.env.example
+*.pem
+*.key
+*.p12
+*.pfx
+
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+.Python
+.venv/
+venv/
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+.coverage
+.coverage.*
+coverage.xml
+coverage/
+frontend/coverage/
+htmlcov/
+dist/
+build/
+*.egg-info/
+
+# Node and Vite
+node_modules/
+frontend/dist/
+*.tsbuildinfo
+*.local
+npm-debug.log*
+pnpm-debug.log*
+
+# Editors and operating systems
+.idea/
+.vscode/
+!.vscode/extensions.json
+!.vscode/settings.json
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# Infrastructure tooling
+.bicep/
+infra/**/*.local.bicepparam
+infra/**/*.parameters.local.json
+infra/**/*.generated.json
+
+# Local scratch and reports
+work/
+reports/
+test-results/
+playwright-report/

@@ -1,2 +1,6 @@
-# Auto detect text files and perform LF normalization
-* text=auto
+# Keep clones and generated artifacts deterministic across Windows and Linux.
+* text=auto eol=lf
+
+*.png binary
+*.woff binary
+*.woff2 binary

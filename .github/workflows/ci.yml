@@ -1,0 +1,184 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ci-${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  backend:
+    name: Backend / Python ${{ matrix.python-version }}
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    strategy:
+      fail-fast: false
+      matrix:
+        python-version: ["3.11", "3.12"]
+    steps:
+      - uses: actions/checkout@v4
+      - uses: astral-sh/setup-uv@v6
+        with:
+          version: "0.8.17"
+          python-version: ${{ matrix.python-version }}
+          enable-cache: true
+          cache-dependency-glob: uv.lock
+      - run: uv sync --locked --all-extras --dev
+      - name: Verify Codex and Claude skill portability
+        run: uv run python .agents/skills/cloud-rag-engineer/scripts/check_portability.py
+      - name: Lint
+        run: uv run ruff check .
+      - name: Check formatting
+        run: uv run ruff format --check .
+      - name: Type-check
+        run: uv run mypy src
+      - name: Test with coverage gate
+        run: uv run pytest --cov=cloud_tutor --cov-report=term-missing --cov-report=xml
+      - if: matrix.python-version == '3.12'
+        name: Run deterministic RAG benchmark
+        run: uv run python -m evals.run_evaluation --json-output eval-results.json
+      - if: matrix.python-version == '3.12'
+        name: Build source and wheel distributions
+        run: uv build --no-sources
+      - if: matrix.python-version == '3.12'
+        uses: actions/upload-artifact@v4
+        with:
+          name: backend-evidence
+          path: |
+            coverage.xml
+            eval-results.json
+            dist/*
+          if-no-files-found: error
+          retention-days: 7
+
+  frontend:
+    name: Frontend / Node 22
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    defaults:
+      run:
+        working-directory: frontend
+    steps:
+      - uses: actions/checkout@v4
+      - uses: pnpm/action-setup@v4
+        with:
+          version: 11.19.0
+          run_install: false
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: pnpm
+          cache-dependency-path: frontend/pnpm-lock.yaml
+      - run: pnpm install --frozen-lockfile
+      - name: Lint
+        run: pnpm lint
+      - name: Test with coverage gate
+        run: pnpm coverage
+      - name: Build
+        run: pnpm build
+
+  container-smoke:
+    name: Container runtime smoke
+    needs: [backend, frontend]
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+    permissions:
+      contents: read
+    steps:
+      - uses: actions/checkout@v4
+      - name: Build Linux image
+        run: docker build --tag stratusguide:ci .
+      - name: Start hardened container
+        run: |
+          docker run --detach \
+            --name stratusguide-ci \
+            --read-only \
+            --tmpfs /tmp:size=64m,mode=1777 \
+            --cap-drop ALL \
+            --security-opt no-new-privileges:true \
+            --publish 127.0.0.1:8000:8000 \
+            stratusguide:ci
+      - name: Wait for health and readiness
+        shell: bash
+        run: |
+          for attempt in $(seq 1 30); do
+            if curl --fail --silent --show-error http://127.0.0.1:8000/healthz > /dev/null \
+              && curl --fail --silent --show-error http://127.0.0.1:8000/health/ready > /dev/null; then
+              echo "Container became ready on attempt ${attempt}."
+              exit 0
+            fi
+
+            if [ "$(docker inspect --format '{{.State.Running}}' stratusguide-ci)" != "true" ]; then
+              echo "Container exited before becoming ready."
+              exit 1
+            fi
+            sleep 2
+          done
+
+          echo "Container did not become ready within 60 seconds."
+          exit 1
+      - name: Exercise grounded demo response
+        shell: bash
+        run: |
+          python - <<'PY'
+          import json
+          import urllib.request
+
+          request = urllib.request.Request(
+              "http://127.0.0.1:8000/api/chat",
+              data=json.dumps(
+                  {"message": "How do RPO and RTO differ?", "top_k": 3}
+              ).encode(),
+              headers={"Content-Type": "application/json"},
+              method="POST",
+          )
+          with urllib.request.urlopen(request, timeout=10) as response:
+              payload = json.load(response)
+
+          assert payload.get("answer"), payload
+          citations = payload.get("citations")
+          assert isinstance(citations, list) and citations, payload
+          assert all(
+              citation.get("title") and citation.get("excerpt")
+              for citation in citations
+          ), payload
+          print(f"Grounded demo response returned {len(citations)} citation(s).")
+          PY
+      - name: Capture container logs
+        if: always()
+        run: docker logs stratusguide-ci > container-smoke.log 2>&1 || true
+      - name: Upload smoke logs
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: container-smoke-logs
+          path: container-smoke.log
+          if-no-files-found: error
+          retention-days: 7
+      - name: Remove smoke container
+        if: always()
+        run: docker rm --force stratusguide-ci || true
+
+  repository-hygiene:
+    name: Repository hygiene
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - uses: astral-sh/setup-uv@v6
+        with:
+          version: "0.8.17"
+      - run: uvx pre-commit run --all-files
+      - name: Validate Compose model
+        run: docker compose config --quiet
+      - name: Compile Bicep template and parameters
+        run: |
+          az bicep build --file infra/main.bicep --stdout > /dev/null
+          az bicep build-params --file infra/environments/dev.bicepparam --stdout > /dev/null
