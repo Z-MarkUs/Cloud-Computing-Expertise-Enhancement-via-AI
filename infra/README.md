@@ -1,6 +1,6 @@
 # Azure Container Apps infrastructure
 
-This directory contains a parameterized Bicep deployment for the application runtime. It creates a Container Apps environment, one Container App, a user-assigned managed identity, and a capped Log Analytics workspace. It does **not** create Azure OpenAI or Azure AI Search resources, deploy models, populate an index, or prove that any Azure deployment has occurred.
+This directory contains a parameterized Bicep deployment for the application runtime. It creates a Container Apps environment, one Container App, a user-assigned managed identity, and a Log Analytics workspace with a daily ingestion cap enabled by default. It does **not** create Azure OpenAI or Azure AI Search resources, deploy models, populate an index, or prove that any Azure deployment has occurred.
 
 ## Security and reliability defaults
 

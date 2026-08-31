@@ -94,7 +94,7 @@ Both modes preserve `POST /api/chat` and its answer/citation/trace response. Wha
 | Best use | Local review, tests, regression evaluation | Integration with pre-existing Azure OpenAI and Search resources |
 | Current evidence | Live local smoke and browser tested | SDK boundary fully mocked; no live Azure call is claimed |
 
-The Bicep template deploys the application runtime, user-assigned identity, Container Apps environment, and capped Log Analytics workspace. It deliberately does **not** create models, Search indexes, source ingestion, or service role assignments. Those boundaries and the least-privilege setup are documented in [`infra/README.md`](infra/README.md).
+The Bicep template deploys the application runtime, user-assigned identity, Container Apps environment, and a Log Analytics workspace with a daily ingestion cap enabled by default. It deliberately does **not** create models, Search indexes, source ingestion, or service role assignments. Those boundaries and the least-privilege setup are documented in [`infra/README.md`](infra/README.md).
 
 ## API contract
 
@@ -198,7 +198,7 @@ This is a **same-corpus deterministic regression suite**, not a held-out academi
 - **Observability:** retrieval/generation/total timings, ranked-document traces, request and chat counters, latency histograms, retrieval-strength histograms, and mode-aware readiness checks.
 - **Container:** multi-stage pnpm/uv build, non-root UID, read-only Compose filesystem, dropped Linux capabilities, no-new-privileges, resource limits, and health checks.
 - **Supply chain:** exact uv and pnpm locks, Dependabot, pre-commit, CodeQL, dependency review, multi-architecture GHCR publishing, BuildKit SBOM, provenance, and artifact attestations.
-- **Infrastructure:** parameterized Azure Container Apps Bicep with HTTPS-only ingress, optional CIDR restrictions, user-assigned identity, encrypted environment traffic, probes, autoscaling, Log Analytics retention, and an ingestion cap.
+- **Infrastructure:** parameterized Azure Container Apps Bicep with HTTPS-only ingress, optional CIDR restrictions, user-assigned identity, encrypted environment traffic, probes, autoscaling, Log Analytics retention, and a configurable ingestion cap that is enabled by default.
 
 Static Bicep, workflow, Dockerfile, Compose, JSON, and YAML validation are included. GitHub secret scanning and push protection are enabled on the public repository. Docker was not available on the development machine, so the Linux image runtime is verified by a GitHub Actions smoke test rather than claimed as a local container run. No Azure resource has been deployed by this repository.
 
