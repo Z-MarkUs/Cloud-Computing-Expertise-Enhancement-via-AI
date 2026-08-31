@@ -10,6 +10,11 @@ updates:
         dependency-type: production
       python-development:
         dependency-type: development
+    # Major upgrades can widen declared compatibility ranges and need an
+    # explicit migration review; security updates remain unaffected.
+    ignore:
+      - dependency-name: "*"
+        update-types: ["version-update:semver-major"]
     open-pull-requests-limit: 5
 
   - package-ecosystem: npm
@@ -20,6 +25,9 @@ updates:
     groups:
       frontend:
         patterns: ["*"]
+    ignore:
+      - dependency-name: "*"
+        update-types: ["version-update:semver-major"]
     open-pull-requests-limit: 5
 
   - package-ecosystem: docker
@@ -27,6 +35,9 @@ updates:
     schedule:
       interval: weekly
       day: monday
+    ignore:
+      - dependency-name: "*"
+        update-types: ["version-update:semver-major"]
     open-pull-requests-limit: 3
 
   - package-ecosystem: github-actions
