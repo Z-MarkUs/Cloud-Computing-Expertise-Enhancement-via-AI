@@ -58,6 +58,14 @@ docker compose up --build
 
 Open <http://localhost:8000>. The safe default is `CLOUD_TUTOR_MODE=demo`; no `.env` file or cloud credential is needed.
 
+Or run the attested, multi-architecture image published by CI:
+
+```bash
+docker run --rm -p 8000:8000 ghcr.io/z-markus/cloud-computing-expertise-enhancement-via-ai:latest
+```
+
+The public [GHCR package](https://github.com/users/Z-MarkUs/packages/container/package/cloud-computing-expertise-enhancement-via-ai) includes `linux/amd64` and `linux/arm64` manifests plus build provenance and an SBOM.
+
 ### Development loop
 
 Prerequisites: Python 3.11+, [uv](https://docs.astral.sh/uv/), Node.js 22+, and pnpm 11.
