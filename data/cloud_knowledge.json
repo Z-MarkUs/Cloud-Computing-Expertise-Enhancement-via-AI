@@ -1,0 +1,207 @@
+{
+  "schema_version": "1.0",
+  "title": "Cloud Tutor Engineering Knowledge Base",
+  "description": "Original, vendor-neutral teaching summaries with links to authoritative further reading.",
+  "documents": [
+    {
+      "id": "cloud-service-models",
+      "title": "Cloud service models: IaaS, PaaS, and SaaS",
+      "section": "Architecture fundamentals",
+      "content": "Infrastructure as a Service (IaaS) supplies compute, storage, and networking while the customer manages the operating system, runtime, data, and application. Platform as a Service (PaaS) also manages the operating system and runtime so a team can focus on its application and data. Software as a Service (SaaS) delivers a complete application; the customer primarily manages users, configuration, and its data. Moving from IaaS to SaaS reduces operational control and operational burden at the same time, so the right choice depends on how much customization the workload needs.",
+      "tags": ["iaas", "paas", "saas", "service model", "managed service", "responsibility"],
+      "uri": "https://learn.microsoft.com/azure/cloud-adoption-framework/ready/considerations/fundamental-concepts"
+    },
+    {
+      "id": "shared-responsibility",
+      "title": "The shared responsibility model",
+      "section": "Security fundamentals",
+      "content": "Cloud security is shared between the provider and customer. The provider always protects the physical facilities, physical hosts, and core platform; the customer always owns its identities, data, access decisions, and configuration. The dividing line moves with the service model: IaaS leaves operating-system patching and more network controls to the customer, while PaaS and SaaS shift more platform work to the provider. Shared responsibility does not mean shared accountability: a team should explicitly assign an owner to each control and verify it continuously.",
+      "tags": ["shared responsibility", "security", "iaas", "paas", "saas", "accountability"],
+      "uri": "https://learn.microsoft.com/azure/security/fundamentals/shared-responsibility"
+    },
+    {
+      "id": "regions-availability-zones",
+      "title": "Regions, availability zones, and failure domains",
+      "section": "Reliability design",
+      "content": "A cloud region is a geographic deployment area, and an availability zone is an independently powered, cooled, and networked location within a region. Spreading redundant instances across zones limits the blast radius of a datacenter failure, but it does not protect against every regional dependency or bad deployment. A multi-region design can tolerate a regional outage, although it adds replication, routing, testing, latency, and cost tradeoffs. Architects should select failure domains from business recovery objectives rather than adding regions by habit.",
+      "tags": ["region", "availability zone", "failure domain", "multi-region", "high availability"],
+      "uri": "https://learn.microsoft.com/azure/reliability/availability-zones-overview"
+    },
+    {
+      "id": "scalability-elasticity",
+      "title": "Scalability and elasticity",
+      "section": "Performance efficiency",
+      "content": "Vertical scaling gives one resource more CPU or memory, while horizontal scaling adds resource instances and distributes work among them. Elasticity is the automated expansion and contraction of capacity as demand changes. Horizontal scaling usually requires stateless request handling, an external session store, and a load balancer; it improves fault tolerance but introduces coordination concerns. Autoscaling signals should reflect user demand, such as queue depth or request latency, and should include cooldowns and tested capacity limits to avoid oscillation.",
+      "tags": ["scaling", "elasticity", "horizontal", "vertical", "autoscaling", "stateless"],
+      "uri": "https://learn.microsoft.com/azure/architecture/framework/scalability/overview"
+    },
+    {
+      "id": "load-balancing",
+      "title": "Load balancing and traffic management",
+      "section": "Networking and delivery",
+      "content": "A load balancer spreads requests across healthy service instances and stops routing to instances that fail health checks. Layer 4 load balancing makes decisions from transport information such as IP addresses and ports; Layer 7 load balancing can route from HTTP hosts, paths, headers, or cookies. Global traffic management chooses a healthy regional endpoint, while a regional load balancer distributes traffic within that endpoint. Health probes must test a dependency-aware readiness path rather than only proving that the process is running.",
+      "tags": ["load balancer", "layer 4", "layer 7", "health probe", "traffic manager", "gateway"],
+      "uri": "https://learn.microsoft.com/azure/architecture/guide/technology-choices/load-balancing-overview"
+    },
+    {
+      "id": "storage-types",
+      "title": "Object, block, and file storage",
+      "section": "Data architecture",
+      "content": "Object storage keeps immutable-style objects and metadata behind an API and is well suited to media, logs, backups, and data lakes. Block storage presents low-level volumes to a machine and is a common fit for databases and filesystems that need predictable random I/O. File storage exposes a shared hierarchical filesystem through protocols such as NFS or SMB. Selection should consider access pattern, consistency, throughput, latency, durability, sharing, lifecycle, and egress cost instead of treating storage classes as interchangeable.",
+      "tags": ["object storage", "block storage", "file storage", "nfs", "smb", "data lake"],
+      "uri": "https://learn.microsoft.com/azure/storage/common/storage-introduction"
+    },
+    {
+      "id": "rpo-rto-backup",
+      "title": "RPO, RTO, backup, and disaster recovery",
+      "section": "Business continuity",
+      "content": "Recovery Point Objective (RPO) is the maximum acceptable amount of data loss measured in time, while Recovery Time Objective (RTO) is the maximum acceptable time to restore service. Backups protect recoverable data states, whereas high availability keeps a service running through expected component failures; neither automatically replaces disaster recovery. A recovery plan should map each workload tier to RPO and RTO, select replication and backup policies accordingly, protect backups from deletion, and rehearse restoration. A backup that has never been restored is evidence of storage, not evidence of recoverability.",
+      "tags": ["rpo", "rto", "backup", "disaster recovery", "business continuity", "restore"],
+      "uri": "https://learn.microsoft.com/azure/well-architected/reliability/metrics"
+    },
+    {
+      "id": "identity-least-privilege",
+      "title": "Cloud identity and least privilege",
+      "section": "Identity and access management",
+      "content": "Identity is the primary security boundary in cloud systems. Least privilege grants a human or workload only the actions and resource scope required for its task, ideally for a limited time. Prefer short-lived federated identities or managed workload identities over stored access keys, require phishing-resistant multifactor authentication for administrators, and separate routine from privileged accounts. Review effective permissions and stale assignments because a narrowly written policy can still become excessive when roles accumulate.",
+      "tags": ["iam", "identity", "least privilege", "rbac", "managed identity", "mfa", "access key"],
+      "uri": "https://learn.microsoft.com/azure/well-architected/security/identity-access"
+    },
+    {
+      "id": "zero-trust",
+      "title": "Zero Trust in cloud environments",
+      "section": "Security architecture",
+      "content": "Zero Trust assumes no request is safe merely because it came from an internal network. Its practical principles are to verify explicitly using current identity, device, workload, and risk signals; grant the least privilege needed; and design as though compromise has already occurred. Controls include strong identity, conditional access, network segmentation, workload authentication, encryption, continuous telemetry, and rapid credential revocation. Zero Trust is an operating model applied across layers, not a single product or a rule that blocks all connectivity.",
+      "tags": ["zero trust", "verify explicitly", "least privilege", "assume breach", "segmentation"],
+      "uri": "https://www.nist.gov/publications/zero-trust-architecture"
+    },
+    {
+      "id": "encryption-secrets",
+      "title": "Encryption, keys, and secrets",
+      "section": "Data protection",
+      "content": "Transport encryption protects data between endpoints, and at-rest encryption protects persisted media; both depend on sound identity and key management. Keep passwords, tokens, and certificates in a managed secrets service rather than source code, images, or ordinary environment files committed to version control. Rotate credentials, restrict secret-read permission, audit access, and prefer workload identity when a platform can eliminate the secret. Customer-managed encryption keys add control but also make key availability, rotation, recovery, and accidental deletion the customer's responsibility.",
+      "tags": ["encryption", "tls", "key management", "secret", "vault", "rotation", "certificate"],
+      "uri": "https://learn.microsoft.com/azure/security/fundamentals/data-encryption-best-practices"
+    },
+    {
+      "id": "virtual-networking",
+      "title": "Virtual cloud networking",
+      "section": "Networking and connectivity",
+      "content": "A virtual cloud network provides private address spaces, subnets, routing, and traffic controls for cloud resources. Subnets should separate trust zones and operational roles instead of mirroring an organization chart. Security groups filter allowed flows, routes select traffic paths, private endpoints expose managed services through private addresses, and DNS makes those endpoints discoverable. Effective designs plan non-overlapping CIDR ranges, centralize controlled ingress and egress, log important flows, and avoid assuming that private addressing alone provides authorization.",
+      "tags": ["vpc", "vnet", "subnet", "cidr", "security group", "private endpoint", "dns"],
+      "uri": "https://learn.microsoft.com/azure/virtual-network/virtual-networks-overview"
+    },
+    {
+      "id": "containers-orchestration",
+      "title": "Containers and orchestration",
+      "section": "Application platform",
+      "content": "A container image packages an application and its user-space dependencies, while containers share the host kernel and remain processes rather than miniature virtual machines. An orchestrator schedules containers, replaces failed replicas, connects services, rolls out versions, and reconciles actual state toward declared state. Teams should build small immutable images, run as a non-root user, pin and scan dependencies, set CPU and memory requests and limits, and keep durable state in appropriate external services. Orchestration pays off for operational scale but is unnecessary complexity for some small workloads.",
+      "tags": ["container", "docker", "kubernetes", "orchestration", "image", "immutable"],
+      "uri": "https://kubernetes.io/docs/concepts/overview/"
+    },
+    {
+      "id": "kubernetes-reliability-security",
+      "title": "Kubernetes workload reliability and security",
+      "section": "Container operations",
+      "content": "Kubernetes uses a readiness probe to decide whether a Pod should receive traffic, a liveness probe to decide whether a stuck container should restart, and a startup probe to protect slow initialization. Resource requests influence scheduling and limits cap consumption; missing values make capacity and noisy-neighbor behavior harder to predict. Reliable workloads use multiple replicas, disruption budgets, graceful termination, topology spread, and autoscaling based on meaningful demand. Secure workloads apply restricted security contexts, scoped service accounts, network policies, admission controls, and timely patching.",
+      "tags": ["kubernetes", "readiness", "liveness", "startup probe", "resource limit", "pod", "security context"],
+      "uri": "https://kubernetes.io/docs/concepts/configuration/liveness-readiness-startup-probes/"
+    },
+    {
+      "id": "serverless",
+      "title": "Serverless and event-driven compute",
+      "section": "Application platform",
+      "content": "Serverless compute runs code or containers without requiring the application team to manage servers, and commonly scales from events. It fits bursty, asynchronous, short-lived, or API workloads when execution limits and supported runtimes are acceptable. Benefits include low idle cost and reduced platform operations; tradeoffs include cold-start latency, service limits, distributed debugging, and provider-specific integrations. Functions should be idempotent where retries are possible, keep state external, bound concurrency against downstream systems, and send repeatedly failing events to a dead-letter destination.",
+      "tags": ["serverless", "function", "faas", "event driven", "cold start", "idempotent", "dead letter"],
+      "uri": "https://learn.microsoft.com/azure/azure-functions/functions-overview"
+    },
+    {
+      "id": "infrastructure-as-code",
+      "title": "Infrastructure as Code",
+      "section": "Cloud automation",
+      "content": "Infrastructure as Code (IaC) describes cloud resources in version-controlled definitions so environments can be reviewed, reproduced, and changed through an auditable workflow. Declarative tools describe desired state, while imperative tools encode the steps to reach it. A safe pipeline validates and plans changes before applying them, protects state and credentials, separates environments, pins providers or modules, and detects drift. Reusable modules should expose intentional interfaces without hiding critical security, cost, or reliability decisions.",
+      "tags": ["iac", "infrastructure as code", "terraform", "bicep", "cloudformation", "drift", "declarative"],
+      "uri": "https://learn.microsoft.com/devops/deliver/what-is-infrastructure-as-code"
+    },
+    {
+      "id": "cicd-strategies",
+      "title": "CI/CD and safe deployment strategies",
+      "section": "Software delivery",
+      "content": "Continuous integration gives every change automated build, test, and security feedback; continuous delivery keeps a releasable artifact moving through controlled environments. Build an artifact once, promote the same immutable artifact, and keep environment-specific configuration outside it. Rolling deployments replace instances gradually, blue-green deployments switch traffic between complete environments, and canary deployments expose a small audience before expansion. Progressive delivery needs health metrics, an explicit rollback trigger, backward-compatible data changes, and observability that distinguishes the new version.",
+      "tags": ["ci", "cd", "pipeline", "blue green", "canary", "rolling deployment", "rollback"],
+      "uri": "https://learn.microsoft.com/devops/deliver/what-is-continuous-delivery"
+    },
+    {
+      "id": "observability",
+      "title": "Logs, metrics, traces, and actionable observability",
+      "section": "Operations",
+      "content": "Metrics summarize behavior over time, logs record discrete events, and distributed traces connect work across service boundaries. Together they should answer whether users are affected, where time or errors arise, and what changed. Instrument request rate, errors, duration, and saturation; propagate correlation identifiers; use structured logs; and avoid recording secrets or sensitive payloads. Alerts should represent actionable user or system risk, link to a runbook, and be tested so teams do not normalize noise.",
+      "tags": ["observability", "logs", "metrics", "traces", "telemetry", "alert", "correlation id"],
+      "uri": "https://opentelemetry.io/docs/concepts/observability-primer/"
+    },
+    {
+      "id": "sre-objectives",
+      "title": "SLIs, SLOs, SLAs, and error budgets",
+      "section": "Site reliability engineering",
+      "content": "A Service Level Indicator (SLI) is a measured aspect of user-visible service, such as the proportion of successful requests under a latency threshold. A Service Level Objective (SLO) is the target range for an SLI, while a Service Level Agreement (SLA) is an external commitment that may carry consequences. The error budget is the unreliability allowed by the SLO. Teams can use error-budget consumption to balance feature delivery with reliability work and should avoid targets so absolute that normal change becomes impossible.",
+      "tags": ["sli", "slo", "sla", "error budget", "reliability", "latency"],
+      "uri": "https://sre.google/sre-book/service-level-objectives/"
+    },
+    {
+      "id": "finops-cost",
+      "title": "Cloud cost engineering and FinOps",
+      "section": "Cost optimization",
+      "content": "Cloud cost is an engineering signal influenced by architecture, utilization, pricing model, and ownership. Start with complete tagging or account structure, allocate shared costs transparently, and expose unit economics such as cost per transaction or tenant. Remove idle resources, right-size from measured demand, schedule nonproduction capacity, select storage lifecycles, and use commitments only for stable baselines. Cost controls need budgets and anomaly alerts, but aggressive savings must be evaluated against reliability, security, performance, and staff time.",
+      "tags": ["finops", "cost optimization", "rightsizing", "tagging", "budget", "unit economics"],
+      "uri": "https://www.finops.org/framework/"
+    },
+    {
+      "id": "resilience-patterns",
+      "title": "Timeout, retry, circuit breaker, and bulkhead patterns",
+      "section": "Distributed-system resilience",
+      "content": "Every remote call needs a timeout derived from an end-to-end latency budget. Retries can recover from transient failures but must use exponential backoff, jitter, a strict attempt budget, and idempotent operations; otherwise they amplify an outage. A circuit breaker temporarily stops calls to a failing dependency, and a bulkhead isolates resources so one failure cannot consume every worker or connection. Load shedding and bounded queues preserve useful work under overload, while observability confirms whether resilience controls help rather than conceal failure.",
+      "tags": ["timeout", "retry", "backoff", "jitter", "circuit breaker", "bulkhead", "load shedding"],
+      "uri": "https://learn.microsoft.com/azure/architecture/patterns/category/resiliency"
+    },
+    {
+      "id": "queues-streams",
+      "title": "Queues, streams, and asynchronous messaging",
+      "section": "Integration architecture",
+      "content": "A work queue buffers tasks and normally gives each message to one competing consumer, while an event stream preserves an ordered history that independent consumers can replay. Messaging decouples producers from consumer availability and absorbs traffic bursts, but delivery is commonly at least once. Consumers should therefore be idempotent, acknowledge only completed work, set retry and dead-letter policies, and monitor age and backlog. Ordering, retention, partitioning, and duplicate handling are business design decisions rather than broker defaults to ignore.",
+      "tags": ["queue", "stream", "message", "event", "kafka", "pubsub", "idempotent", "dead letter"],
+      "uri": "https://learn.microsoft.com/azure/architecture/guide/technology-choices/messaging"
+    },
+    {
+      "id": "cache-cdn",
+      "title": "Caching and content delivery networks",
+      "section": "Performance architecture",
+      "content": "A cache trades some freshness and invalidation complexity for lower latency and reduced downstream load. Cache-aside lets an application load missing values and then populate the cache; a Content Delivery Network (CDN) places cacheable content near users. Choose keys, time-to-live, size limits, eviction, and invalidation from the consistency needs of each datum. Protect against cache stampedes with request coalescing or jittered expirations, and never let a shared cache mix tenant or authorization boundaries.",
+      "tags": ["cache", "cdn", "cache aside", "ttl", "invalidation", "stampede", "latency"],
+      "uri": "https://learn.microsoft.com/azure/architecture/best-practices/caching"
+    },
+    {
+      "id": "database-scaling-consistency",
+      "title": "Database scaling and consistency tradeoffs",
+      "section": "Data architecture",
+      "content": "Read replicas can scale read-heavy traffic but may return stale data because replication takes time. Sharding partitions records across database nodes and expands capacity, but it complicates joins, transactions, rebalancing, and hot-key handling. Strong consistency makes the latest successful write visible according to the system's guarantee; eventual consistency permits temporary divergence so replicas can remain available or close to users. The correct model follows business invariants: payments and inventory reservations often need stronger coordination than feeds, analytics, or caches.",
+      "tags": ["database", "read replica", "sharding", "strong consistency", "eventual consistency", "replication"],
+      "uri": "https://learn.microsoft.com/azure/architecture/guide/technology-choices/data-store-overview"
+    },
+    {
+      "id": "cloud-migration",
+      "title": "Cloud migration strategies and modernization",
+      "section": "Migration planning",
+      "content": "A migration portfolio can retire unused systems, retain workloads that should not move yet, rehost with minimal change, replatform onto selected managed capabilities, repurchase a SaaS alternative, or refactor around a new architecture. Rehosting is often faster but carries existing operational constraints into the cloud; modernization can improve elasticity and operations but requires more engineering and validation. Sequence migrations from dependencies and risk, establish a landing zone first, define rollback and data-cutover plans, and measure the intended business outcome after transition.",
+      "tags": ["migration", "rehost", "replatform", "refactor", "repurchase", "retire", "landing zone"],
+      "uri": "https://learn.microsoft.com/azure/cloud-adoption-framework/digital-estate/5-rs-of-rationalization"
+    },
+    {
+      "id": "well-architected",
+      "title": "Well-architected cloud decision making",
+      "section": "Architecture governance",
+      "content": "A well-architected review examines reliability, security, cost, operational excellence, and performance as connected concerns. An improvement in one area can create a tradeoff in another: multi-region replication may improve recovery while increasing cost and data complexity, and very high utilization may save money while reducing failure headroom. Record assumptions and decisions, test critical risks, measure outcomes, and repeat the review as workloads and business constraints change. Architecture quality comes from explicit, evidence-backed tradeoffs rather than maximizing every pillar independently.",
+      "tags": ["well architected", "reliability", "security", "cost", "operations", "performance", "tradeoff"],
+      "uri": "https://learn.microsoft.com/azure/well-architected/"
+    }
+  ]
+}
