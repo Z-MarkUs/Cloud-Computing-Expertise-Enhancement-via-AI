@@ -114,4 +114,65 @@ describe("StratusGuide", () => {
     expect(await screen.findByText(/retrieval service unavailable/i)).toBeInTheDocument();
     expect(screen.getByText("How should I design retries?")).toBeInTheDocument();
   });
+
+  it("opens and dismisses citations repeatedly, then starts a clean trace", async () => {
+    const user = userEvent.setup();
+    const fetchMock = installFetchMock();
+    render(<App />);
+
+    await user.click(screen.getByRole("button", { name: /availability zones improve resilience/i }));
+    await screen.findByTestId("assistant-message");
+
+    for (let attempt = 0; attempt < 2; attempt += 1) {
+      await user.click(screen.getByRole("button", { name: /resilience and availability zones/i }));
+      expect(screen.getByText(chatResponse.citations[0].excerpt)).toBeInTheDocument();
+      await user.click(screen.getByRole("button", { name: /back to trace/i }));
+      expect(screen.queryByText(chatResponse.citations[0].excerpt)).not.toBeInTheDocument();
+      expect(screen.getByText(/availability zones resilience/i)).toBeInTheDocument();
+    }
+
+    await user.click(screen.getByRole("button", { name: /new trace/i }));
+    expect(screen.getByRole("heading", { name: /cloud answers/i })).toBeInTheDocument();
+    expect(screen.queryByTestId("assistant-message")).not.toBeInTheDocument();
+    expect(screen.getByText(/evidence will appear here/i)).toBeInTheDocument();
+
+    await user.click(screen.getByRole("button", { name: /horizontal and vertical scaling/i }));
+    await screen.findByTestId("assistant-message");
+    const chatCalls = fetchMock.mock.calls.filter(([url]) => String(url).endsWith("/api/chat"));
+    expect(chatCalls).toHaveLength(2);
+    expect(JSON.parse(String(chatCalls[1][1]?.body))).toMatchObject({ history: [] });
+    expect(screen.getAllByTestId("user-message")).toHaveLength(1);
+  });
+
+  it("aborts an in-flight request on reset and accepts a new question", async () => {
+    const user = userEvent.setup();
+    const fetchMock = installFetchMock();
+    const originalFetch = fetchMock.getMockImplementation()!;
+    let delayedSignal: AbortSignal | null | undefined;
+    fetchMock.mockImplementation((input, init) => {
+      if (String(input).endsWith("/api/chat") && !delayedSignal) {
+        delayedSignal = init?.signal;
+        return new Promise<Response>((_resolve, reject) => {
+          delayedSignal?.addEventListener("abort", () => {
+            reject(new DOMException("Request aborted", "AbortError"));
+          }, { once: true });
+        });
+      }
+      return originalFetch(input, init);
+    });
+    render(<App />);
+
+    await user.click(screen.getByRole("button", { name: /availability zones improve resilience/i }));
+    expect(screen.getByRole("textbox", { name: /cloud computing question/i })).toBeDisabled();
+    expect(screen.getByRole("button", { name: /send question/i })).toBeDisabled();
+
+    await user.click(screen.getByRole("button", { name: /new trace/i }));
+    expect(delayedSignal?.aborted).toBe(true);
+    expect(screen.queryByLabelText(/retrieving evidence/i)).not.toBeInTheDocument();
+    await user.click(screen.getByRole("button", { name: /horizontal and vertical scaling/i }));
+    await screen.findByTestId("assistant-message");
+    expect(screen.getAllByTestId("user-message")).toHaveLength(1);
+    expect(screen.getByTestId("user-message")).toHaveTextContent(/horizontal and vertical scaling/i);
+    expect(screen.getAllByTestId("assistant-message")).toHaveLength(1);
+  });
 });
